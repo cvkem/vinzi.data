@@ -68,24 +68,25 @@ named tagname."
     (fn [loc]
       (= attrval (xZip/attr loc attrname)))))
 
-(defn attr1=
-  "Returns a query predicate that matches a node when it has an
-  attribute named attrname whose value is attrval."
-  ([attrmap] {:pre [(map? attrmap)]}
-             (let [kvs (seq attrmap)]
-               (fn [loc]
-                 (when (zip/branch? loc) 
-                   (let [attrs (-> loc zip/node :attrs)]
-                     (letfn [(and-attr [cumm [k v]] 
-                                       (and cumm (= (k attrs) v)))]
-                                (reduce and-attr true kvs)))))))
-  ([attrname attrval] 
-    (fn [loc]
-      (= attrval (xZip/attr loc attrname)))))
+ ;; not used  (old code?)
+;(defn attr1=
+;  "Returns a query predicate that matches a node when it has an
+;  attribute named attrname whose value is attrval."
+;  ([attrmap] {:pre [(map? attrmap)]}
+;             (let [kvs (seq attrmap)]
+;               (fn [loc]
+;                 (when (zip/branch? loc) 
+;                   (let [attrs (-> loc zip/node :attrs)]
+;                     (letfn [(and-attr [cumm [k v]] 
+;                                       (and cumm (= (k attrs) v)))]
+;                                (reduce and-attr true kvs)))))))
+;  ([attrname attrval] 
+;    (fn [loc]
+;      (= attrval (xZip/attr loc attrname)))))
 
 
 (defn tagattrs= "Return items that match on tag AND
- on the sequence of attributes." 
+ on the sequence of attributes."
   [tagname & attrkv]
   {:pre [(even? (count attrkv))]}
   (let [tagmatch (tag= tagname)
@@ -115,8 +116,9 @@ named tagname."
   "Construct a path that can be applied to a similar xml-zip structure.
    Path matches :tag and :attrs along the path. 
    Note: XML allows multiple nodes with same path, so beware of duplicates. 
-     Use (is-zipper? to check whether you receive a zipper, or a lazy sequence of zippers, if
-      duplicates are possible."
+     Use (is-zipper?) to check whether you receive a zipper, or a lazy sequence of zippers, if
+      duplicates can exist."
+  ;; Use tagattrsCnt= instead of tagattrs=  to exclude nodes with additional attrs
   [loc]
   {:pre [loc (is-zipper? loc)]}
   (letfn [(gen-tagattrs= [node]
@@ -129,7 +131,10 @@ named tagname."
            (apply concat (map gen-tagattrs= path))))) 
 
 (defn reconstruct-loc 
-  "Find the location indicated by 'path' in the 'zipper'." 
+  "Find the location indicated by 'path' in the 'zipper'.
+   Warning: reconstruction does not check whether a node has more attributes than specified as 
+     parameter. This might result in multiple matches due to similar locs with additional attributes." 
+  ;; TODO: solve issue by introduction of tagattrsCnt= and use is in contruct-path
   [zipper path]
   {:pre [(is-zipper? zipper)]}
   ;; (auto false zipper) used, such that root is matched against first item of path.
