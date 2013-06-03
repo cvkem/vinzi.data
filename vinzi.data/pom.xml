@@ -187,4 +187,13 @@
     </repository>
   </distributionManagement>  	
   
+	<url>https://github.com/cvkem/vinzi.data</url>
+	<organization>
+		<name>vinzi BV</name>
+		<url>www.vinzi.nl</url>
+	</organization>
+	<scm>
+		<url>https://github.com/cvkem/vinzi.data</url>
+		<tag>020e7331b88802d57e77b3c4d079201e0104693a</tag>
+	</scm>
 </project>
