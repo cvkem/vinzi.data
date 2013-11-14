@@ -6,9 +6,9 @@ old/
 *.war
 /lib/
 vinzi.data/target/
-/target/
-.lein-failures
-.lein-deps-sum
+vinzi.data/.settings/
+leinProj/target/
+.lein*
 *~
 *.class
 *#
